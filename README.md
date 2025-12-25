@@ -39,7 +39,11 @@ Extensions to install:
     ES7+ React/Redux/React-Native snippets (by dsznajder)
 
 How to construct URL for fetching API (from API documentations like Finnhub):
+
     Base URL: https://finnhub.io/api/v1
+    
     Endpoint Path: GET /quote
+    
     Query Parameters: symbol = AAPL,  token = YOUR_API_KEY  -->  ?symbol=AAPL&token=YOUR_API_KEY
+    
     Final URL: https://finnhub.io/api/v1/quote?symbol=AAPL&token=YOUR_API_KEY
