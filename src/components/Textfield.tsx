@@ -1,5 +1,6 @@
 import { ReactNode } from "react"; // Import the ReactNode type for typing the children props.
 
+// Define the global variable fields for a Textfield "object" (think Java OOP):
 interface TextfieldProps {
   value: string; // The current value of the text field.
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // This event handler will be called whenever the text field's input value changes. The event's type must be specified so TypeScript knows what type of event it is.

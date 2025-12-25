@@ -1,5 +1,6 @@
 import { ReactNode } from "react"; // Import the ReactNode type for typing potential children props.
 
+// Define the global variable fields for a Button "object" (think Java OOP):
 interface ButtonProps {
   children: ReactNode; // The children prop is specified as ReactNode type, which accepts any valid React node (string, element, component, etc.). In this case, to give the Button some text.
   color?: "success"; // Optional color prop for styling the button.

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Textfield from "./components/textfield"; // Import the Textfield component from the components folder.
 import Button from "./components/Button"; // Import the Button component from the components folder.
 
@@ -17,6 +17,20 @@ function App() {
   const [seconds, setSeconds] = useState<string>(""); // Initialize the state for seconds as a string (make the string start as empty).
   const [stockSymbol, setStockSymbol] = useState<string>(""); // Initialize the state for stock symbol as a string (make the string start as empty).
   const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (make the array start as undefined).
+
+  // Use the Effect Hook to set up a timer that fetches stock data at regular intervals based on user input:
+  useEffect(() => {
+    // Convert minutes state and seconds state to total milliseconds:
+    const totalMilliseconds = Number(minutes) * 60000 + Number(seconds) * 1000; // Cast minutes and seconds from string to number using the Number() function.
+
+    if (totalMilliseconds <= 0) {
+      return; // If the totalMilliseconds is set to less than or equal to 0, do not set up the interval.
+    }
+
+    const interval = setInterval(fetchStockData, totalMilliseconds); // Set up an interval that calls fetchStockData function after every totalMilliseconds interval.
+
+    return () => clearInterval(interval); // clearInterval() is a cleanup function that clears the interval when the component (App) disconnects or when the Effect Hook is refreshed (prevents memory leaks).
+  });
 
   /*
   // Function that adds a fake row to the stock data table when the SUBMIT button is clicked (must be inside App function to access state variables):
