@@ -20,6 +20,10 @@ function App() {
 
   // Use the Effect Hook to set up a timer that fetches stock data at regular intervals based on user input:
   useEffect(() => {
+    if (!stockSymbol) {
+      return; // If stockSymbol is empty, do not set up the interval.
+    }
+
     // Convert minutes state and seconds state to total milliseconds:
     const totalMilliseconds = Number(minutes) * 60000 + Number(seconds) * 1000; // Cast minutes and seconds from string to number using the Number() function.
 
