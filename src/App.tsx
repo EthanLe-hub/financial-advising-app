@@ -16,13 +16,20 @@ function App() {
   const [minutes, setMinutes] = useState<string>(""); // Initialize the state for minutes as a string (make the string start as empty).
   const [seconds, setSeconds] = useState<string>(""); // Initialize the state for seconds as a string (make the string start as empty).
   const [stockSymbol, setStockSymbol] = useState<string>(""); // Initialize the state for stock symbol as a string (make the string start as empty).
-  const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (make the array start as undefined).
+  const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (make the array start as empty).
+  const [isTracking, setIsTracking] = useState<boolean>(false); // Initialize the state for isTracking as a boolean (make it initially false, it will get set to true to indicate when the SUBMIT button has been pressed).
 
-  // Use the Effect Hook to set up a timer that fetches stock data at regular intervals based on user input:
+  // Effect Hook that starts and cleans up a polling interval to fetch stock data based on the user-defined interval:
   useEffect(() => {
+    if (!isTracking) {
+      return; // If isTracking is false, do not set up the interval (it will only be true once the SUBMIT button is clicked).
+    }
+
     if (!stockSymbol) {
       return; // If stockSymbol is empty, do not set up the interval.
     }
+
+    fetchStockData(); // Fetch stock data IMMEDIATELY when the SUBMIT button is clicked; then the interval starts.
 
     // Convert minutes state and seconds state to total milliseconds:
     const totalMilliseconds = Number(minutes) * 60000 + Number(seconds) * 1000; // Cast minutes and seconds from string to number using the Number() function.
@@ -34,7 +41,7 @@ function App() {
     const interval = setInterval(fetchStockData, totalMilliseconds); // Set up an interval that calls fetchStockData function after every totalMilliseconds interval.
 
     return () => clearInterval(interval); // clearInterval() is a cleanup function that clears the interval when the component (App) disconnects or when the Effect Hook is refreshed (prevents memory leaks).
-  });
+  }, [isTracking, minutes, seconds, stockSymbol]); // The Effect Hook will re-run whenever isTracking, minutes, seconds, or stockSymbol state changes.
 
   /*
   // Function that adds a fake row to the stock data table when the SUBMIT button is clicked (must be inside App function to access state variables):
@@ -65,6 +72,11 @@ function App() {
     const response = await fetch(
       `https://finnhub.io/api/v1/quote?symbol=${stockSymbol}&token=d569l0hr01qu3qo99me0d569l0hr01qu3qo99meg`
     );
+
+    if (!response.ok) {
+      console.log("Error fetching stock data");
+      return; // If the response is not OK (status code not in the range 200-299), log an error message and exit the function.
+    }
 
     const realData = await response.json(); // Parse the response as JSON before using it. The "realData" variable now contains the stock data from the API as a JavaScript object.
 
@@ -105,7 +117,9 @@ function App() {
       {/* Set the placeholder to "STOCK SYMBOL", the input value to an empty string, and update the stockSymbol state when the input value changes. */}
 
       <Button // Function for the button click event.
-        onClick={fetchStockData} // Call the fetchStockData function when the button is clicked (fetches stock data from the API).
+        onClick={() => {
+          if (!isTracking) setIsTracking(true);
+        }} // If isTracking is false, set the isTracking state to true when the SUBMIT button is clicked -- the useEffect function will now run properly since isTracking is no longer false; the fetchStockData function will now be called (fetches stock data from the API).
       >
         SUBMIT
       </Button>
