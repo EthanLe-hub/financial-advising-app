@@ -16,8 +16,9 @@ function App() {
   const [minutes, setMinutes] = useState<string>(""); // Initialize the state for minutes as a string (make the string start as empty).
   const [seconds, setSeconds] = useState<string>(""); // Initialize the state for seconds as a string (make the string start as empty).
   const [stockSymbol, setStockSymbol] = useState<string>(""); // Initialize the state for stock symbol as a string (make the string start as empty).
-  const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (starts as undefined).
+  const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (make the array start as undefined).
 
+  /*
   // Function that adds a fake row to the stock data table when the SUBMIT button is clicked (must be inside App function to access state variables):
   const addFakeRow = () => {
     const newEntry: StockData = {
@@ -31,6 +32,35 @@ function App() {
     };
 
     setStockData((previousData) => [...previousData, newEntry]); // Update stockData state by adding (appending) the new StockData object to previousData (the existing stockData array).
+  };
+  */
+
+  // Function that fetches REAL stock data from an API based on the stockSymbol, minutes, and seconds inputted by the user:
+  const fetchStockData = async () => {
+    // Must be async because we are using await inside the function, which waits for the fetch call to be finished before continuing.
+    if (!stockSymbol) {
+      // If stockSymbol is empty, do not fetch any data.
+      return;
+    }
+
+    // Fetch stock data (quotes) from the Finnhub API using the stockSymbol entered by the user:
+    const response = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${stockSymbol}&token=d569l0hr01qu3qo99me0d569l0hr01qu3qo99meg`
+    );
+
+    const realData = await response.json(); // Parse the response as JSON before using it. The "realData" variable now contains the stock data from the API as a JavaScript object.
+
+    const newEntry: StockData = {
+      // Create a new StockData object with the following global variable fields from the API response (use realData variable to get the data for each field) (again, think of objects in Java OOP).
+      openPrice: realData.o, // Opening price from API response (under Quote object in Finnhub documentations).
+      highPrice: realData.h, // High price from API response.
+      lowPrice: realData.l, // Low price from API response.
+      currentPrice: realData.c, // Current price from API response.
+      previousClosePrice: realData.pc, // Previous close price from API response.
+      time: new Date().toLocaleTimeString(), // Get the current time as a string.
+    };
+
+    setStockData((previousData) => [...previousData, newEntry]); // Update stockData state by adding (appending) the new StockData object to previousData (the existing StockData array).
   };
 
   return (
@@ -56,8 +86,8 @@ function App() {
       />
       {/* Set the placeholder to "STOCK SYMBOL", the input value to an empty string, and update the stockSymbol state when the input value changes. */}
 
-      <Button // Placeholder function for the button click event.
-        onClick={addFakeRow} // Call the addFakeRow function when the button is clicked (adds a fake row to the table).
+      <Button // Function for the button click event.
+        onClick={fetchStockData} // Call the fetchStockData function when the button is clicked (fetches stock data from the API).
       >
         SUBMIT
       </Button>
