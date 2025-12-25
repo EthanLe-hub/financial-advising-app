@@ -13,9 +13,9 @@ interface StockData {
 }
 
 function App() {
-  const [minutes, setMinutes] = useState<string>(""); // Initialize the state for minutes (make the string start as empty).
-  const [seconds, setSeconds] = useState<string>(""); // Initialize the state for seconds (make the string start as empty).
-  const [stockSymbol, setStockSymbol] = useState<string>(""); // Initialize the state for stock symbol (make the string start as empty).
+  const [minutes, setMinutes] = useState<string>(""); // Initialize the state for minutes as a string (make the string start as empty).
+  const [seconds, setSeconds] = useState<string>(""); // Initialize the state for seconds as a string (make the string start as empty).
+  const [stockSymbol, setStockSymbol] = useState<string>(""); // Initialize the state for stock symbol as a string (make the string start as empty).
   const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (starts as undefined).
 
   // Function that adds a fake row to the stock data table when the SUBMIT button is clicked (must be inside App function to access state variables):
@@ -30,7 +30,7 @@ function App() {
       time: new Date().toLocaleTimeString(), // Get the current time as a string.
     };
 
-    setStockData((previousData) => [...previousData, newEntry]); // Update stockData state by adding the new StockData object to previousData (the existing stockData array).
+    setStockData((previousData) => [...previousData, newEntry]); // Update stockData state by adding (appending) the new StockData object to previousData (the existing stockData array).
   };
 
   return (
@@ -57,7 +57,7 @@ function App() {
       {/* Set the placeholder to "STOCK SYMBOL", the input value to an empty string, and update the stockSymbol state when the input value changes. */}
 
       <Button // Placeholder function for the button click event.
-        onClick={() => addFakeRow()} // Call the addFakeRow function when the button is clicked (adds a fake row to the table).
+        onClick={addFakeRow} // Call the addFakeRow function when the button is clicked (adds a fake row to the table).
       >
         SUBMIT
       </Button>
@@ -79,6 +79,7 @@ function App() {
               row,
               indexNumber // Map over each StockData object (row) in the stockData array and render a table row for each one. The indexNumber is used as the key for each row.
             ) => (
+              // Get each global variable field from the StockData object and render it in a table cell.
               <tr key={indexNumber}>
                 <td>{row.openPrice}</td>
                 <td>{row.highPrice}</td>
