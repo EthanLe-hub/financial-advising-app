@@ -116,13 +116,21 @@ function App() {
       />
       {/* Set the placeholder to "STOCK SYMBOL", the input value to an empty string, and update the stockSymbol state when the input value changes. */}
 
-      <Button // Function for the button click event.
+      <Button // Function for the SUBMIT button click event.
         onClick={() => {
           if (!isTracking) setIsTracking(true);
         }} // If isTracking is false, set the isTracking state to true when the SUBMIT button is clicked -- the useEffect function will now run properly since isTracking is no longer false; the fetchStockData function will now be called (fetches stock data from the API).
       >
         SUBMIT
       </Button>
+
+      {isTracking && ( // Only if isTracking is true (only if the SUBMIT button has been clicked at least once), show the REFRESH button.
+        <Button // Function for the REFRESH button click event.
+          onClick={fetchStockData} // Call fetchStockData function to IMMEDIATELY fetch latest stock data from the API when the REFRESH button is clicked.
+        >
+          REFRESH
+        </Button>
+      )}
 
       <table className="table">
         <thead>
