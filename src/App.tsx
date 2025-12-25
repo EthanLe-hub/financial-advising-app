@@ -2,10 +2,36 @@ import { useState } from "react";
 import Textfield from "./components/textfield"; // Import the Textfield component from the components folder.
 import Button from "./components/Button"; // Import the Button component from the components folder.
 
+// This is the data that one row in the table will contain -- one StockData object represents a single row:
+interface StockData {
+  openPrice: number; // The opening price of the stock as a number type.
+  highPrice: number; // The highest price of the stock as a number type.
+  lowPrice: number; // The lowest price of the stock as a number type.
+  currentPrice: number; // The current price of the stock as a number type.
+  previousClosePrice: number; // The previous closing price of the stock as a number type.
+  time: string; // The time of the stock data as a string type.
+}
+
 function App() {
   const [minutes, setMinutes] = useState<string>(""); // Initialize the state for minutes (make the string start as empty).
   const [seconds, setSeconds] = useState<string>(""); // Initialize the state for seconds (make the string start as empty).
   const [stockSymbol, setStockSymbol] = useState<string>(""); // Initialize the state for stock symbol (make the string start as empty).
+  const [stockData, setStockData] = useState<StockData[]>([]); // Initialize the state for stock data as an array of StockData objects (starts as undefined).
+
+  // Function that adds a fake row to the stock data table when the SUBMIT button is clicked (must be inside App function to access state variables):
+  const addFakeRow = () => {
+    const newEntry: StockData = {
+      // Create a new StockData object with the following global variable fields (think of objects in Java OOP).
+      openPrice: 318.25,
+      highPrice: 323.44,
+      lowPrice: 315.63,
+      currentPrice: 316.77,
+      previousClosePrice: 318.11,
+      time: new Date().toLocaleTimeString(), // Get the current time as a string.
+    };
+
+    setStockData((previousData) => [...previousData, newEntry]); // Update stockData state by adding the new StockData object to previousData (the existing stockData array).
+  };
 
   return (
     <div>
@@ -31,10 +57,40 @@ function App() {
       {/* Set the placeholder to "STOCK SYMBOL", the input value to an empty string, and update the stockSymbol state when the input value changes. */}
 
       <Button // Placeholder function for the button click event.
-        onClick={() => console.log("Button clicked!")}
+        onClick={() => addFakeRow()} // Call the addFakeRow function when the button is clicked (adds a fake row to the table).
       >
         SUBMIT
       </Button>
+
+      <table className="table">
+        <thead>
+          <tr>
+            <th scope="col">Open Price</th>
+            <th scope="col">High Price</th>
+            <th scope="col">Low Price</th>
+            <th scope="col">Current Price</th>
+            <th scope="col">Previous Close Price</th>
+            <th scope="col">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stockData.map(
+            (
+              row,
+              indexNumber // Map over each StockData object (row) in the stockData array and render a table row for each one. The indexNumber is used as the key for each row.
+            ) => (
+              <tr key={indexNumber}>
+                <td>{row.openPrice}</td>
+                <td>{row.highPrice}</td>
+                <td>{row.lowPrice}</td>
+                <td>{row.currentPrice}</td>
+                <td>{row.previousClosePrice}</td>
+                <td>{row.time}</td>
+              </tr>
+            )
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
